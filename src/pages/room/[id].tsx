@@ -12,8 +12,8 @@ export default function Room({
       <div>
         <div className="grid">
           <QRCodeSVG
-            size="250"
-            includeMargin="true"
+            size={250}
+            includeMargin={true}
             value={`${process.env.NEXT_URL}/room/${room.ref_code}`}
           />
         </div>
