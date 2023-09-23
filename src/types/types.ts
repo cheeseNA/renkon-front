@@ -1,12 +1,12 @@
 export type Contact = {
-  id: number;
-  person_id: number;
+  id: string;
+  person_id: string;
   content: string;
   content_type: string;
 };
 
 export type Person = {
-  id: number;
+  id: string;
   name: string;
   room_id: string;
   contacts: Contact[];
