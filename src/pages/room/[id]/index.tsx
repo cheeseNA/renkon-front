@@ -1,4 +1,5 @@
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import Link from "next/link";
 import { Room } from "@/types/types";
 import { getRoomByRefCode } from "@/apis/apis";
 import { QRCodeSVG } from "qrcode.react";
@@ -14,7 +15,7 @@ export default function Room({
           <QRCodeSVG
             size={250}
             includeMargin={true}
-            value={`${process.env.NEXT_URL}/room/${room.ref_code}`}
+            value={`${process.env.NEXT_PUBLIC_NEXT_URL}/room/${room.ref_code}`}
           />
         </div>
         <div>
@@ -36,7 +37,9 @@ export default function Room({
           </article>
         ))}
       </div>
-      <button>Add your contacts</button>
+      <Link href={`/room/${room.ref_code}/create`} passHref>
+        <button>Add your contacts</button>
+      </Link>
     </div>
   );
 }
