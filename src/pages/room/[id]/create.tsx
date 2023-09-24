@@ -1,24 +1,34 @@
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { Room } from "@/types/types";
-import { getRoomByRefCode } from "@/apis/apis";
+import { Room, ContentType } from "@/types/types";
+import { getRoomByRefCode, createPerson, createContact } from "@/apis/apis";
 
 export default function PersonCreate({
   room,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const router = useRouter();
   const [name, setName] = useState<string>("");
   const [contacts, setContacts] = useState<
-    { content_type: string; content: string }[]
-  >([{ content_type: "email", content: "" }]);
+    { content_type: ContentType; content: string }[]
+  >([{ content_type: ContentType.EMAIL, content: "" }]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const person = await createPerson(room.id, name);
+    for (const contact of contacts) {
+      await createContact(person.id, contact.content_type, contact.content);
+    }
+    router.push(`/room/${room.ref_code}`);
   };
 
   const handleAddContact = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setContacts([...contacts, { content_type: "email", content: "" }]);
+    setContacts([
+      ...contacts,
+      { content_type: ContentType.EMAIL, content: "" },
+    ]);
   };
 
   return (
@@ -47,12 +57,17 @@ export default function PersonCreate({
                   value={contact.content_type}
                   onChange={(e) => {
                     const newContacts = [...contacts];
-                    newContacts[index].content_type = e.target.value;
+                    newContacts[index].content_type = e.target
+                      .value as ContentType;
                     setContacts(newContacts);
                   }}
                   required
                 >
-                  <option value="email">email</option>
+                  {Object.values(ContentType).map((contentType) => (
+                    <option key={contentType} value={contentType}>
+                      {contentType}
+                    </option>
+                  ))}
                 </select>
               </label>
               <label htmlFor="content">
