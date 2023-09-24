@@ -15,7 +15,7 @@ export default function Room({
           <QRCodeSVG
             size={250}
             includeMargin={true}
-            value={`${process.env.NEXT_URL}/room/${room.ref_code}`}
+            value={`${process.env.NEXT_PUBLIC_NEXT_URL}/room/${room.ref_code}`}
           />
         </div>
         <div>
