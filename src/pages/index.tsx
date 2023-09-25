@@ -1,10 +1,27 @@
 import Head from "next/head";
-import Image from "next/image";
+import { useRouter } from "next/router";
+import { useState } from "react";
 import { Inter } from "next/font/google";
+import { createRoom } from "@/apis/apis";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const router = useRouter();
+  const [ref_code, setRefCode] = useState<string>("");
+  const [duration, setDuration] = useState<string>("P1D");
+
+  const handleCreateRoom = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const room = await createRoom("P3D");
+    router.push(`/room/${room.ref_code}`);
+  };
+
+  const handleJoinRoom = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    router.push(`/room/${ref_code}`);
+  };
+
   return (
     <>
       <Head>
@@ -13,7 +30,52 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={`${inter.className}`}></main>
+      <main className={`${inter.className} container`}>
+        <nav>
+          <ul>
+            <li>
+              <h2>
+                <strong>Renkon</strong>
+              </h2>
+            </li>
+          </ul>
+        </nav>
+        <div>
+          valid for
+          <select
+            name="duration"
+            id="duration"
+            value={duration}
+            onChange={(e) => setDuration(e.target.value)}
+          >
+            <option value="PT1H">1 hour</option>
+            <option value="PT3H">3 hours</option>
+            <option value="P1D">1 day</option>
+            <option value="P3D">3 days</option>
+          </select>
+          <button onClick={handleCreateRoom}>Create Room</button>
+        </div>
+        <p>
+          <strong>OR</strong>
+        </p>
+        <div>
+          <form onSubmit={handleJoinRoom}>
+            <label htmlFor="ref_code">
+              Room ID:
+              <input
+                type="text"
+                id="ref_code"
+                name="ref_code"
+                placeholder="Room ID"
+                value={ref_code}
+                onChange={(e) => setRefCode(e.target.value)}
+                required
+              />
+            </label>
+            <button type="submit">Join Room</button>
+          </form>
+        </div>
+      </main>
     </>
   );
 }
