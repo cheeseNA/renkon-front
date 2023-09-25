@@ -12,6 +12,13 @@ export async function getRoomByRefCode(ref_code: string): Promise<Room> {
   return response.data;
 }
 
+export async function createRoom(duration: string): Promise<Room> {
+  const response = await axios.post<Room>(`${BASE_URL}/room/create`, {
+    duration: duration,
+  });
+  return response.data;
+}
+
 export async function createPerson(
   room_id: string,
   name: string
