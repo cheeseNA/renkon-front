@@ -1,8 +1,8 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Inter } from "next/font/google";
-import { createRoom } from "@/apis/apis";
+import { createRoom, callHelloWorld } from "@/apis/apis";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +21,11 @@ export default function Home() {
     e.preventDefault();
     router.push(`/room/${ref_code}`);
   };
+
+  // for preventing cold start
+  useEffect(() => {
+    callHelloWorld();
+  }, []);
 
   return (
     <>
